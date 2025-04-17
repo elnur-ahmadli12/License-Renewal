@@ -6,11 +6,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+// index.js'deki Router'ı kaldır (sadece App.js'de kullan)
 root.render(
   <React.StrictMode>
-    <Router> {/* Router burada tanımlandı */}
-      <App />
-    </Router>
+    <App />
   </React.StrictMode>
 );
 

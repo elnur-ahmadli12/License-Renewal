@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import Bgimage from "../assets/traffic.jpg";
+import axios from 'axios';
+const API_URL = "http://localhost:5000/api/auth";
+
+
 
 const LoginSignup = () => {
+  const navigate = useNavigate(); // Hook'u çağır
   const [isSignUp, setIsSignUp] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -73,19 +79,36 @@ const LoginSignup = () => {
     return requirements.every((req) => req.isValid);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email) {
       setEmailError("Email is required");
+      return;
     } else if (!validateEmail(email)) {
       setEmailError("Please enter a valid email address");
+      return;
+    } 
+    try {
+      const response = await axios.post(`${API_URL}/login`, {
+        email: email,
+        password: password
+      });
+
+      // Başarılı giriş sonrası
+    localStorage.setItem("token", response.data.token); // Token'ı sakla
+    navigate('/add-vehicle'); 
+    // Ana sayfaya yönlendirme yapabilirsin:
+    // window.location.href = "/dashboard";
+
+  } catch (error) {
+    if (error.response) {
+      alert(error.response.data.error || "Giriş başarısız!");
     } else {
-      setEmailError("");
-      // Proceed with login
-      console.log("Login successful");
+      alert("Sunucuyla bağlantı kurulamadı!");
     }
+  }
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () =>{
     let isValid = true;
     if (!email) {
       setEmailError("Email is required");
@@ -112,10 +135,36 @@ const LoginSignup = () => {
     }
 
     if (isValid) {
-      // Proceed with sign up
-      console.log("Sign up successful");
+      try {
+        const response = await axios.post(`${API_URL}/register`, {
+          name: name,
+          email: email,
+          password: password
+        });
+        
+        // Başarılı kayıt sonrası
+        alert(response.data.message); // "Kayıt başarılı!" mesajı
+        setIsSignUp(false); // Login sayfasına geç
+        
+      } catch (error) {
+        if (error.response) {
+          // Backend'den gelen hata mesajını göster
+          alert(error.response.data.error || "Kayıt başarısız!");
+        } else {
+          alert("Sunucuyla bağlantı kurulamadı!");
+        }
+      }
     }
   };
+
+        // Diğer import'ların yanına
+axios.interceptors.request.use(config => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
   return (
     <div
