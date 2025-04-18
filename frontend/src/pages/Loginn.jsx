@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import Bgimage from "../assets/traffic.jpg";
 import axios from 'axios';
-const API_URL = "http://localhost:5000/api/auth";
+const API_URL = "http://localhost:5000/api/auth"; // Backend portuyla eşleşmeli
 
 
 
@@ -184,7 +184,8 @@ axios.interceptors.request.use(config => {
           <p className="text-white mt-4">{isSignUp ? "Already have an account?" : "If you don't have an account"}</p>
           <button
             onClick={() => setIsSignUp(!isSignUp)}
-            className="mt-4 px-6 py-2 border border-white rounded bg-transparent text-white hover:bg-white hover:text-black transition"
+            className="mt-4 px-6 py-2 border border-white rounded bg-transparent text-white hover:bg-[#00df9a] hover:text-black transition text-sm md:text-base"
+            style={{ borderColor: '#00df9a' }}
           >
             {isSignUp ? "Login" : "Sign Up"}
           </button>
@@ -250,20 +251,20 @@ axios.interceptors.request.use(config => {
                     <label htmlFor="remember" className="text-white">Remember Me</label>
                   </div>
                   <button
-                    className="text-blue-400 hover:text-blue-300 text-sm"
+                    className="text-[#00df9a] hover:text-[#00c789] text-sm"
                     onClick={() => console.log("Forgot Password clicked")}
                   >
                     Forgot Password?
                   </button>
                 </div>
                 <button
-                  className="mt-6 w-full py-3 bg-blue-500 hover:bg-blue-700 transition rounded text-white font-semibold"
+                  className="w-full py-2 md:py-3 bg-[#00df9a] hover:bg-[#00c789] transition rounded text-black font-semibold text-sm md:text-base mb-3"
                   onClick={handleLogin}
                 >
                   Login
                 </button>
-                <button className="mt-4 w-full flex items-center justify-center text-white border border-white py-2 rounded hover:bg-white hover:text-black transition">
-                  <FaGoogle className="mr-2" /> Connect to Google
+                <button className="w-full flex items-center justify-center text-white border border-[#00df9a] py-2 rounded hover:bg-[#00df9a] hover:text-black transition text-sm md:text-base">
+                  <FaGoogle className="mr-2" size={14} /> Connect to Google
                 </button>
               </motion.div>
             ) : (
@@ -365,7 +366,7 @@ axios.interceptors.request.use(config => {
                   <p className="text-red-500 text-sm">{confirmPasswordError}</p>
                 )}
                 <button
-                  className="mt-6 w-full py-3 bg-blue-500 hover:bg-blue-700 transition rounded text-white font-semibold"
+                  className="mt-6 w-full py-3 bg-[#00df9a] hover:bg-[#00c789]   transition rounded text-white font-semibold  text-sm md:text-base "
                   onClick={handleSignUp}
                 >
                   Sign Up

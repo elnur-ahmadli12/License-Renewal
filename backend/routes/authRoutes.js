@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { register, login } = require('../controllers/authController');
+const authController = require('../controllers/authController'); // Doğru import
 
-router.post('/register', register);
-router.post('/login', login);
+// Değişiklik burada:
+router.post('/register', authController.register); // authController. ekledik
+router.post('/login', authController.login); // authController. ekledik
 
 module.exports = router;

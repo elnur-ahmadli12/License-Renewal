@@ -6,6 +6,6 @@ const authenticate = require('../middleware/authenticate'); // JWT doğrulama
 // Tüm vehicle rotaları için JWT kontrolü
 router.use(authenticate);
 
-router.post('/add', vehicleController.addVehicle);
-
+// vehicleRoutes.js
+router.post("/add", vehicleController.addVehicle); // addVehicle fonksiyonu kontrol et!
 module.exports = router;

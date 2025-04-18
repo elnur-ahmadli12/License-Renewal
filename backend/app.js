@@ -1,8 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes'); // Bu satır önemli!
-const vehicleRoutes = require('./routes/vehicleRoutes');
-app.use('/api/vehicles', vehicleRoutes);
+
 const app = express();
 
 // Middleware'ler

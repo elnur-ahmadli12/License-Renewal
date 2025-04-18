@@ -4,14 +4,7 @@ const pool = require('../config/db'); // Veritabanı bağlantısı
 const bcrypt = require('bcrypt'); // Şifre hashleme
 const jwt = require('jsonwebtoken'); // JWT token oluşturma
 const dotenv = require('dotenv');
-const getMe = async (req, res) => {
-    try {
-      const [user] = await pool.query('SELECT id, name, email FROM users WHERE id = ?', [req.userId]);
-      res.json({ user: user[0] });
-    } catch (error) {
-      res.status(500).json({ error: "Sunucu hatası!" });
-    }
-  };
+
 dotenv.config();
 
 // KAYIT (REGISTER) FONKSİYONU
