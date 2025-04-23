@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import UserDashboard from './pages/UserDashboard';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './context/AuthContext';
+import ProfileE from './pages/Profile';
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
-          
+          <Route path="/profile" element={<ProfileE />} />
           {/* Tüm private routelar burada */}
           <Route element={<PrivateRoute />}>
             <Route path="/UserDashboard" element={<UserDashboard />} />

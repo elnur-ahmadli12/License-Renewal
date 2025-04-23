@@ -9,7 +9,7 @@ const UserDashboard = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Verileri çekme fonksiyonu
+  // Data fetching function
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,22 +20,21 @@ const UserDashboard = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        // Tarih formatlama işlemleri
         const formattedData = {
           ...response.data,
           license: response.data.license ? {
             ...response.data.license,
-            expiry_date: new Date(response.data.license.expiry_date).toLocaleDateString('tr-TR')
+            expiry_date: new Date(response.data.license.expiry_date).toLocaleDateString('en-US')
           } : null,
           vehicles: response.data.vehicles.map(vehicle => ({
             ...vehicle,
-            road_tax_expiry: new Date(vehicle.road_tax_expiry).toLocaleDateString('tr-TR')
+            road_tax_expiry: new Date(vehicle.road_tax_expiry).toLocaleDateString('en-US')
           }))
         };
 
         setUserData(formattedData);
       } catch (error) {
-        console.error('Veri çekilemedi:', error);
+        console.error('Data fetch failed:', error);
         localStorage.removeItem('token');
         navigate('/login');
       } finally {
@@ -46,7 +45,7 @@ const UserDashboard = () => {
     fetchData();
   }, [navigate]);
 
-  // Araç silme fonksiyonu
+  // Vehicle deletion handler
   const handleDeleteVehicle = async (vehicleId) => {
     try {
       await axios.delete(`http://localhost:5000/api/vehicles/${vehicleId}`, {
@@ -58,11 +57,11 @@ const UserDashboard = () => {
         vehicles: prev.vehicles.filter(vehicle => vehicle.id !== vehicleId)
       }));
     } catch (error) {
-      console.error('Araç silme hatası:', error);
+      console.error('Vehicle deletion error:', error);
     }
   };
 
-  // Belge yükleme fonksiyonu
+  // Document upload handler
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     const formData = new FormData();
@@ -75,178 +74,178 @@ const UserDashboard = () => {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
-      alert('Belge başarıyla yüklendi!');
+      alert('Document uploaded successfully!');
     } catch (error) {
-      alert('Belge yüklenemedi!');
+      alert('Document upload failed!');
     }
   };
 
-  // Yükleme durumu
+  // Loading state
   if (loading) return (
     <div className="flex justify-center items-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-600"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00df9a]"></div>
     </div>
   );
 
-  // Hata durumu
+  // Error state
   if (!userData) return (
     <div className="p-4 text-red-500 text-center mt-8">
-      Veri alınamadı! Lütfen tekrar deneyin.
+      Failed to load data! Please try again.
     </div>
   );
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
       {/* Mobile Header */}
-      <div className="md:hidden flex justify-between items-center p-4 bg-emerald-600 text-white">
+      <div className="md:hidden flex justify-between items-center p-4 bg-[#00df9a] text-white shadow-lg">
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="text-xl"
-          aria-label="Menüyü Aç/Kapat"
+          className="text-2xl hover:scale-110 transition-transform"
+          aria-label="Toggle Menu"
         >
           ☰
         </button>
-        <h1 className="text-xl font-bold">Dashboard</h1>
+        <h1 className="text-xl font-bold tracking-wide">User Dashboard</h1>
         <div className="w-6"></div>
       </div>
 
       {/* Sidebar */}
-      <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} md:block w-full md:w-64 bg-emerald-600 text-white flex flex-col`}>
-        <div className="p-6 border-b border-emerald-500">
-          <div className="flex items-center space-x-3">
-            <div className="bg-emerald-500 p-2 rounded-full">
-              <FiUser className="text-xl" />
+      <div className={`${isMobileMenuOpen ? 'absolute inset-0 z-50' : 'hidden'} md:block w-full md:w-72 bg-gray-800 text-white flex flex-col shadow-xl`}>
+        <div className="p-6 border-b border-gray-700">
+          <div className="flex items-center space-x-4">
+            <div className="bg-[#00df9a] p-3 rounded-xl shadow">
+              <FiUser className="text-2xl" />
             </div>
             <div>
-              <h2 className="font-bold text-lg">{userData.user.name}</h2>
-              <p className="text-sm text-emerald-100">{userData.user.email}</p>
+              <h2 className="font-bold text-lg text-gray-100">{userData.user.name}</h2>
+              <p className="text-sm text-gray-400">{userData.user.email}</p>
             </div>
           </div>
         </div>
 
-        <div className="p-4 border-t border-emerald-500 mt-auto">
+        <div className="p-4 border-t border-gray-700 mt-auto">
           <button
             onClick={() => {
               localStorage.removeItem('token');
               navigate('/login');
             }}
-            className="flex items-center justify-center w-full p-3 bg-red-500 hover:bg-red-600 rounded-lg transition"
+            className="flex items-center justify-center w-full p-3 bg-[#00df9a] hover:bg-[#00c885] text-white rounded-xl transition-all shadow hover:shadow-lg"
           >
-            <FiLogOut className="mr-2" />
-            Çıkış Yap
+            <FiLogOut className="mr-2 transform hover:rotate-180 transition-transform" />
+            Log Out
           </button>
         </div>
       </div>
 
-      {/* Ana İçerik */}
+      {/* Main Content */}
       <div className="flex-1 overflow-auto p-6">
-        {/* Acil Uyarılar */}
-        <div className="bg-red-100 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
-          <h3 className="text-red-800 font-bold mb-2">⏳ Yaklaşan Son Tarihler</h3>
+        {/* Urgent Alerts */}
+        <div className="bg-[#00df9a]/10 border-l-4 border-[#00df9a] p-4 mb-6 rounded-lg shadow-sm">
+          <h3 className="text-gray-800 font-bold mb-2 flex items-center">
+            <FiFileText className="mr-2 text-[#00df9a]" />⏳ Upcoming Deadlines
+          </h3>
           <div className="space-y-1">
             {userData.license && (
-              <p className="text-red-600">
-                Ehliyet Son Geçerlilik: {userData.license.expiry_date}
+              <p className="text-gray-700">
+                License Expiry: {userData.license.expiry_date}
               </p>
             )}
             {userData.vehicles.map(vehicle => (
-              <p key={vehicle.id} className="text-red-600">
-                {vehicle.plate_number} Vergi Bitiş: {vehicle.road_tax_expiry}
+              <p key={vehicle.id} className="text-gray-700">
+                {vehicle.plate_number} Tax Expiry: {vehicle.road_tax_expiry}
               </p>
             ))}
           </div>
         </div>
 
-        {/* Hızlı Eylemler */}
+        {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <button
-            onClick={() => navigate('/renew-license')}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white p-4 rounded-lg transition flex items-center justify-center"
-          >
-            📝 Ehliyet Yenile
-          </button>
-          <button
-            onClick={() => navigate('/add-vehicle')}
-            className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg transition flex items-center justify-center"
-          >
-            🚗 Yeni Araç Ekle
-          </button>
-          <button
-            onClick={() => document.getElementById('fileInput').click()}
-            className="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg transition flex items-center justify-center"
-          >
-            📁 Belge Yükle
-          </button>
+          {[
+            { title: 'Renew License', icon: '📝', color: 'bg-[#00df9a]', action: '/renew-license' },
+            { title: 'Add Vehicle', icon: '🚗', color: 'bg-gray-800', action: '/add-vehicle' },
+            { title: 'Upload Document', icon: '📁', color: 'bg-[#00df9a]', action: 'fileInput' },
+          ].map((item, index) => (
+            <button
+              key={index}
+              onClick={() => item.action === 'fileInput' 
+                ? document.getElementById('fileInput').click() 
+                : navigate(item.action)}
+              className={`${item.color} hover:${item.color === 'bg-gray-800' ? 'bg-gray-900' : 'bg-[#00c885]'} text-white p-4 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center space-x-2`}
+            >
+              <span className="text-xl">{item.icon}</span>
+              <span className="font-medium">{item.title}</span>
+            </button>
+          ))}
           <input type="file" id="fileInput" hidden onChange={handleFileUpload} />
         </div>
 
-        {/* Ana İçerik Grid */}
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Ehliyet Bilgileri */}
-          <div className="bg-white rounded-xl shadow p-6">
+          {/* License Information */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#00df9a] hover:shadow-xl transition-shadow">
             <div className="flex items-center mb-4">
-              <FiFileText className="text-emerald-600 mr-2 text-xl" />
-              <h2 className="text-lg font-semibold">Ehliyet Bilgileri</h2>
+              <FiFileText className="text-[#00df9a] mr-2 text-2xl" />
+              <h2 className="text-lg font-semibold text-gray-800">License Details</h2>
             </div>
             {userData.license ? (
               <div className="space-y-2">
-                <p><span className="font-medium">Numara:</span> {userData.license.license_number}</p>
-                <p><span className="font-medium">Son Geçerlilik:</span> {userData.license.expiry_date}</p>
+                <p className="text-gray-600"><span className="font-medium">Number:</span> {userData.license.license_number}</p>
+                <p className="text-gray-600"><span className="font-medium">Expiry Date:</span> {userData.license.expiry_date}</p>
                 <button
                   onClick={() => navigate('/renew-license')}
-                  className="mt-4 text-emerald-600 hover:text-emerald-700 font-medium"
+                  className="mt-4 text-[#00df9a] hover:text-[#00c885] font-medium flex items-center"
                 >
-                  Yenileme Yap →
+                  Renew Now <span className="ml-2">→</span>
                 </button>
               </div>
             ) : (
-              <p className="text-gray-500">Ehliyet bilgisi bulunamadı</p>
+              <p className="text-gray-500">No license information found</p>
             )}
           </div>
 
-          {/* Araç Listesi */}
-          <div className="bg-white rounded-xl shadow p-6">
+          {/* Vehicle List */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#00df9a] hover:shadow-xl transition-shadow">
             <div className="flex items-center mb-4">
-              <FiTruck className="text-emerald-600 mr-2 text-xl" />
-              <h2 className="text-lg font-semibold">Kayıtlı Araçlar</h2>
+              <FiTruck className="text-[#00df9a] mr-2 text-2xl" />
+              <h2 className="text-lg font-semibold text-gray-800">Registered Vehicles</h2>
             </div>
             {userData.vehicles.length > 0 ? (
               <div className="space-y-4">
                 {userData.vehicles.map(vehicle => (
-                  <div key={vehicle.id} className="border p-4 rounded-lg">
+                  <div key={vehicle.id} className="border p-4 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="font-medium">{vehicle.model}</p>
+                        <p className="font-medium text-gray-800">{vehicle.model}</p>
                         <p className="text-sm text-gray-500">{vehicle.year}</p>
                       </div>
-                      <span className="bg-gray-100 px-3 py-1 rounded-full text-sm font-mono">
+                      <span className="bg-gray-100 px-3 py-1 rounded-full text-sm font-mono text-gray-700">
                         {vehicle.plate_number}
                       </span>
                     </div>
                     <div className="mt-2">
-                      <p className="text-sm">
-                        <span className="font-medium">Vergi Bitiş:</span> {vehicle.road_tax_expiry}
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Tax Expiry:</span> {vehicle.road_tax_expiry}
                       </p>
                     </div>
-                    <div className="mt-3 flex gap-2">
+                    <div className="mt-3 flex gap-3">
                       <button
                         onClick={() => handleDeleteVehicle(vehicle.id)}
-                        className="text-red-500 hover:text-red-700"
+                        className="text-gray-500 hover:text-[#00df9a] transition-colors"
                       >
-                        <FiTrash2 />
+                        <FiTrash2 className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => navigate(`/edit-vehicle/${vehicle.id}`)}
-                        className="text-blue-500 hover:text-blue-700"
+                        className="text-gray-500 hover:text-[#00df9a] transition-colors"
                       >
-                        <FiEdit2 />
+                        <FiEdit2 className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500">Kayıtlı araç bulunamadı</p>
+              <p className="text-gray-500">No registered vehicles found</p>
             )}
           </div>
         </div>
