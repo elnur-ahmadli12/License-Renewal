@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
-
+import logo from '../assets/logo3.png';
 const Navbar = () => {
   const [nav, setNav] = useState(false);
 
@@ -13,9 +13,13 @@ const Navbar = () => {
     <div className='w-full bg-gray-900 text-white'>
       <div className='flex justify-between items-center h-24 px-4'>
         {/* Logo */}
-        <h1 className='text-3xl font-bold text-[#00df9a]'>
-          <Link to="/home">Driving License Renewal.</Link>
-        </h1>
+        <Link to="/home">
+        <img 
+          src={logo} 
+          alt="Driving License Renewal Logo" 
+          className="h-40 w-auto hover:opacity-80 transition-opacity"
+        />
+      </Link>
 
         {/* Desktop Menü */}
         <ul className='hidden md:flex'>

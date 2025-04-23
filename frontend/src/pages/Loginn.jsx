@@ -79,35 +79,29 @@ const LoginSignup = () => {
     return requirements.every((req) => req.isValid);
   };
 
-  const handleLogin = async () => {
-    if (!email) {
-      setEmailError("Email is required");
-      return;
-    } else if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email address");
-      return;
-    } 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+  
     try {
-      const response = await axios.post(`${API_URL}/login`, {
-        email: email,
-        password: password
-      });
-
-      // Başarılı giriş sonrası
-    localStorage.setItem("token", response.data.token); // Token'ı sakla
-    navigate('/add-vehicle'); 
-    // Ana sayfaya yönlendirme yapabilirsin:
-    // window.location.href = "/dashboard";
-
-  } catch (error) {
-    if (error.response) {
-      alert(error.response.data.error || "Giriş başarısız!");
-    } else {
-      alert("Sunucuyla bağlantı kurulamadı!");
+      const response = await axios.post(
+        `${API_URL}/login`,
+        { email, password },
+        { withCredentials: true } // 🔑 Bu satırı ekleyin!
+      );
+  
+      if (!response.data.token) {
+        alert("Token alınamadı!");
+        return;
+      }
+  
+      localStorage.setItem('token', response.data.token);
+      navigate('/UserDashboard');
+  
+    } catch (error) {
+      alert(error.response?.data?.error || "Sunucu hatası!");
     }
-  }
   };
-
+  
   const handleSignUp = async () =>{
     let isValid = true;
     if (!email) {
@@ -162,6 +156,7 @@ axios.interceptors.request.use(config => {
   const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    config.withCredentials = true; // Oturum yönetimi için
   }
   return config;
 });
@@ -365,12 +360,15 @@ axios.interceptors.request.use(config => {
                 {confirmPasswordError && (
                   <p className="text-red-500 text-sm">{confirmPasswordError}</p>
                 )}
-                <button
-                  className="mt-6 w-full py-3 bg-[#00df9a] hover:bg-[#00c789]   transition rounded text-white font-semibold  text-sm md:text-base "
-                  onClick={handleSignUp}
-                >
-                  Sign Up
-                </button>
+                <form onSubmit={handleSignUp}> {/* Form tag'ını ekleyin */}
+  {/* Diğer input alanları buraya */}
+  <button
+    type="submit" // type="submit" ekleyin
+    className="mt-6 w-full py-3 bg-[#00df9a] hover:bg-[#00c789] transition rounded text-white font-semibold text-sm md:text-base"
+  >
+    Sign Up
+  </button>
+</form>
               </motion.div>
             )}
           </AnimatePresence>

@@ -1,17 +1,26 @@
 const express = require('express');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes'); // Bu satır önemli!
-
 const app = express();
+require('dotenv').config();
 
-// Middleware'ler
-app.use(cors());
+// Middleware
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 
-// Route'lar
-app.use('/api/auth', authRoutes); // <- Bu şekilde kullan
+// Routes
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const vehicleRoutes = require('./routes/vehicleRoutes');
 
+app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/vehicles', vehicleRoutes);
+
+// Sunucu
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Sunucu ${PORT} portunda çalışıyor`);
 });

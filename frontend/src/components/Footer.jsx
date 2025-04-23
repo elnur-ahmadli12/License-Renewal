@@ -1,12 +1,12 @@
 import React from 'react';
 import {
-  FaDribbble,
   FaFacebookSquare,
-  FaGithubSquare,
   FaTwitterSquare,
   FaInstagramSquare,
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo3.png';
+
 
 
 const Footer = () => {
@@ -35,8 +35,14 @@ const Footer = () => {
       <div className='max-w-[1240px] mx-auto grid lg:grid-cols-3 gap-8 text-gray-300'>
         {/* Sol Taraf: Logo ve Sosyal Medya */}
         <div>
-          <h1 className='w-full text-3xl font-bold text-[#00df9a]'>Driving License Renewal.</h1>
-          <p className='py-4'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quisquam, voluptatum.</p>
+           <Link to="/home">
+                  <img 
+                    src={logo} 
+                    alt="Driving License Renewal Logo" 
+                    className="h-40 w-auto hover:opacity-80 transition-opacity"
+                  />
+                </Link>
+          
           <div className='flex justify-between md:w-[75%] my-6'>
             <FaFacebookSquare size={30} className='hover:text-[#00df9a] cursor-pointer' />
             

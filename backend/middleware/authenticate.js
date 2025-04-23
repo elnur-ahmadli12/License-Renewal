@@ -1,15 +1,19 @@
-// backend/middleware/authenticate.js (JWT kontrolü için)
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ error: 'Access denied' });
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: "Token gerekiyor!" });
+  }
 
+  const token = authHeader.split(' ')[1];
+  
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.id;
+    req.userId = decoded.id; // Tüm route'larda erişilebilir
     next();
-  } catch (err) {
-    res.status(400).json({ error: 'Invalid token' });
+  } catch (error) {
+    res.status(401).json({ error: "Geçersiz token!" });
   }
 };
