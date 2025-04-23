@@ -11,8 +11,6 @@ const Profile = () => {
     email: '',
     licenseNumber: '',
     licenseExpiry: '',
-    vehiclePlate: '',
-    vehicleTaxExpiry: '',
     password: '',
     confirmPassword: ''
   });
@@ -105,8 +103,6 @@ const Profile = () => {
     if (!user.licenseNumber) newErrors.licenseNumber = 'License number is required';
     if (!user.licenseExpiry) newErrors.licenseExpiry = 'Expiry date is required';
     if (new Date(user.licenseExpiry) < new Date()) newErrors.licenseExpiry = 'License has expired';
-    if (!user.vehiclePlate) newErrors.vehiclePlate = 'Plate number is required';
-    if (!user.vehicleTaxExpiry) newErrors.vehicleTaxExpiry = 'Tax expiry is required';
     
     if (user.password && user.password !== user.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
@@ -154,13 +150,13 @@ const Profile = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-black text-white p-4 md:p-8"
+      className="min-h-screen bg-gray-100 text-gray-800 p-4 md:p-8"
     >
       <motion.h1 
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, type: 'spring' }}
-        className="text-3xl font-bold mb-8"
+        className="text-3xl font-bold mb-8 text-gray-900"
       >
         Profile Management
       </motion.h1>
@@ -170,29 +166,29 @@ const Profile = () => {
         initial="hidden"
         animate="visible"
         onSubmit={handleSubmit} 
-        className="max-w-4xl mx-auto"
+        className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Personal Information Column */}
           <motion.div variants={containerVariants} className="space-y-4">
-            <motion.h2 variants={itemVariants} className="text-xl font-semibold mb-4">Personal Information</motion.h2>
+            <motion.h2 variants={itemVariants} className="text-xl font-semibold mb-4 text-gray-700">Personal Information</motion.h2>
             
             <motion.div variants={itemVariants} className="mb-4">
-              <label className="block text-sm font-medium mb-2">Full Name</label>
+              <label className="block text-sm font-medium mb-2 text-gray-600">Full Name</label>
               <motion.input
                 whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px #00df9a" }}
                 type="text"
                 name="name"
                 value={user.name}
                 onChange={handleChange}
-                className={`w-full p-3 rounded bg-gray-900 border ${errors.name ? 'border-red-500' : 'border-gray-700'} text-white focus:outline-none`}
+                className={`w-full p-3 rounded bg-gray-50 border ${errors.name ? 'border-red-500' : 'border-gray-300'} text-gray-800 focus:outline-none`}
                 required
               />
               {errors.name && (
                 <motion.p 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  className="text-red-400 text-sm mt-1"
+                  className="text-red-500 text-sm mt-1"
                 >
                   {errors.name}
                 </motion.p>
@@ -200,21 +196,21 @@ const Profile = () => {
             </motion.div>
             
             <motion.div variants={itemVariants} className="mb-4">
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <label className="block text-sm font-medium mb-2 text-gray-600">Email</label>
               <motion.input
                 whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px #00df9a" }}
                 type="email"
                 name="email"
                 value={user.email}
                 onChange={handleChange}
-                className={`w-full p-3 rounded bg-gray-900 border ${errors.email ? 'border-red-500' : 'border-gray-700'} text-white focus:outline-none`}
+                className={`w-full p-3 rounded bg-gray-50 border ${errors.email ? 'border-red-500' : 'border-gray-300'} text-gray-800 focus:outline-none`}
                 required
               />
               {errors.email && (
                 <motion.p 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  className="text-red-400 text-sm mt-1"
+                  className="text-red-500 text-sm mt-1"
                 >
                   {errors.email}
                 </motion.p>
@@ -222,7 +218,7 @@ const Profile = () => {
             </motion.div>
             
             <motion.div variants={itemVariants} className="mb-4">
-              <label className="block text-sm font-medium mb-2">Profile Picture</label>
+              <label className="block text-sm font-medium mb-2 text-gray-600">Profile Picture</label>
               <motion.div 
                 whileHover={{ scale: 1.01 }}
                 className="relative overflow-hidden"
@@ -231,9 +227,9 @@ const Profile = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="w-full p-3 rounded bg-gray-900 border border-gray-700 text-white opacity-0 absolute inset-0 z-10 cursor-pointer"
+                  className="w-full p-3 rounded bg-gray-50 border border-gray-300 text-gray-800 opacity-0 absolute inset-0 z-10 cursor-pointer"
                 />
-                <div className="w-full p-3 rounded bg-gray-900 border border-gray-700 text-gray-400">
+                <div className="w-full p-3 rounded bg-gray-50 border border-gray-300 text-gray-500">
                   {profilePicture ? profilePicture.name : 'Choose a file...'}
                 </div>
               </motion.div>
@@ -242,24 +238,24 @@ const Profile = () => {
           
           {/* Driver Information Column */}
           <motion.div variants={containerVariants} className="space-y-4">
-            <motion.h2 variants={itemVariants} className="text-xl font-semibold mb-4">Driver Information</motion.h2>
+            <motion.h2 variants={itemVariants} className="text-xl font-semibold mb-4 text-gray-700">Driver Information</motion.h2>
             
             <motion.div variants={itemVariants} className="mb-4">
-              <label className="block text-sm font-medium mb-2">License Number</label>
+              <label className="block text-sm font-medium mb-2 text-gray-600">License Number</label>
               <motion.input
                 whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px #00df9a" }}
                 type="text"
                 name="licenseNumber"
                 value={user.licenseNumber}
                 onChange={handleChange}
-                className={`w-full p-3 rounded bg-gray-900 border ${errors.licenseNumber ? 'border-red-500' : 'border-gray-700'} text-white focus:outline-none`}
+                className={`w-full p-3 rounded bg-gray-50 border ${errors.licenseNumber ? 'border-red-500' : 'border-gray-300'} text-gray-800 focus:outline-none`}
                 required
               />
               {errors.licenseNumber && (
                 <motion.p 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  className="text-red-400 text-sm mt-1"
+                  className="text-red-500 text-sm mt-1"
                 >
                   {errors.licenseNumber}
                 </motion.p>
@@ -267,21 +263,21 @@ const Profile = () => {
             </motion.div>
             
             <motion.div variants={itemVariants} className="mb-4">
-              <label className="block text-sm font-medium mb-2">License Expiry Date</label>
+              <label className="block text-sm font-medium mb-2 text-gray-600">License Expiry Date</label>
               <motion.input
                 whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px #00df9a" }}
                 type="date"
                 name="licenseExpiry"
                 value={user.licenseExpiry}
                 onChange={handleChange}
-                className={`w-full p-3 rounded bg-gray-900 border ${errors.licenseExpiry ? 'border-red-500' : 'border-gray-700'} text-white focus:outline-none`}
+                className={`w-full p-3 rounded bg-gray-50 border ${errors.licenseExpiry ? 'border-red-500' : 'border-gray-300'} text-gray-800 focus:outline-none`}
                 required
               />
               {errors.licenseExpiry && (
                 <motion.p 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  className="text-red-400 text-sm mt-1"
+                  className="text-red-500 text-sm mt-1"
                 >
                   {errors.licenseExpiry}
                 </motion.p>
@@ -289,82 +285,31 @@ const Profile = () => {
             </motion.div>
           </motion.div>
           
-          {/* Vehicle Information (Full width) */}
-          <motion.div variants={containerVariants} className="space-y-4 md:col-span-2">
-            <motion.h2 variants={itemVariants} className="text-xl font-semibold mb-4">Vehicle Information</motion.h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <motion.div variants={itemVariants} className="mb-4">
-                <label className="block text-sm font-medium mb-2">Vehicle Plate Number</label>
-                <motion.input
-                  whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px #00df9a" }}
-                  type="text"
-                  name="vehiclePlate"
-                  value={user.vehiclePlate}
-                  onChange={handleChange}
-                  className={`w-full p-3 rounded bg-gray-900 border ${errors.vehiclePlate ? 'border-red-500' : 'border-gray-700'} text-white focus:outline-none`}
-                  required
-                />
-                {errors.vehiclePlate && (
-                  <motion.p 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="text-red-400 text-sm mt-1"
-                  >
-                    {errors.vehiclePlate}
-                  </motion.p>
-                )}
-              </motion.div>
-              
-              <motion.div variants={itemVariants} className="mb-4">
-                <label className="block text-sm font-medium mb-2">Vehicle Tax Expiry Date</label>
-                <motion.input
-                  whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px #00df9a" }}
-                  type="date"
-                  name="vehicleTaxExpiry"
-                  value={user.vehicleTaxExpiry}
-                  onChange={handleChange}
-                  className={`w-full p-3 rounded bg-gray-900 border ${errors.vehicleTaxExpiry ? 'border-red-500' : 'border-gray-700'} text-white focus:outline-none`}
-                  required
-                />
-                {errors.vehicleTaxExpiry && (
-                  <motion.p 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="text-red-400 text-sm mt-1"
-                  >
-                    {errors.vehicleTaxExpiry}
-                  </motion.p>
-                )}
-              </motion.div>
-            </div>
-          </motion.div>
-          
           {/* Password Section (Full width) */}
           <motion.div variants={containerVariants} className="space-y-4 md:col-span-2">
-            <motion.h2 variants={itemVariants} className="text-xl font-semibold mb-4">Password Update</motion.h2>
+            <motion.h2 variants={itemVariants} className="text-xl font-semibold mb-4 text-gray-700">Password Update</motion.h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <motion.div variants={itemVariants} className="mb-4">
-                <label className="block text-sm font-medium mb-2">New Password</label>
+                <label className="block text-sm font-medium mb-2 text-gray-600">New Password</label>
                 <motion.input
                   whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px #00df9a" }}
                   type="password"
                   name="password"
                   value={user.password}
                   onChange={handleChange}
-                  className={`w-full p-3 rounded bg-gray-900 border ${errors.password ? 'border-red-500' : 'border-gray-700'} text-white focus:outline-none`}
+                  className={`w-full p-3 rounded bg-gray-50 border ${errors.password ? 'border-red-500' : 'border-gray-300'} text-gray-800 focus:outline-none`}
                 />
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: '100%' }}
                   transition={{ duration: 0.5 }}
-                  className="h-1 w-full bg-gray-700 mt-1"
+                  className="h-1 w-full bg-gray-200 mt-1"
                 >
                   <motion.div 
                     className={`h-full ${passwordStrength > 3 ? 'bg-[#00df9a]' : 
-                      passwordStrength > 2 ? 'bg-yellow-500' : 
-                      passwordStrength > 1 ? 'bg-orange-500' : passwordStrength > 0 ? 'bg-red-500' : ''}`} 
+                      passwordStrength > 2 ? 'bg-[#00df9a]' : 
+                      passwordStrength > 1 ? 'bg-[#00df9a]' : passwordStrength > 0 ? 'bg-[#00df9a]' : ''}`} 
                     animate={{ width: `${(passwordStrength / 4) * 100}%` }}
                     transition={{ duration: 0.3 }}
                   />
@@ -372,20 +317,20 @@ const Profile = () => {
               </motion.div>
               
               <motion.div variants={itemVariants} className="mb-4">
-                <label className="block text-sm font-medium mb-2">Confirm Password</label>
+                <label className="block text-sm font-medium mb-2 text-gray-600">Confirm Password</label>
                 <motion.input
                   whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px #00df9a" }}
                   type="password"
                   name="confirmPassword"
                   value={user.confirmPassword}
                   onChange={handleChange}
-                  className={`w-full p-3 rounded bg-gray-900 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-700'} text-white focus:outline-none`}
+                  className={`w-full p-3 rounded bg-gray-50 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'} text-gray-800 focus:outline-none`}
                 />
                 {errors.confirmPassword && (
                   <motion.p 
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="text-red-400 text-sm mt-1"
+                    className="text-red-500 text-sm mt-1"
                   >
                     {errors.confirmPassword}
                   </motion.p>
@@ -401,7 +346,7 @@ const Profile = () => {
           whileTap="tap"
           type="submit"
           disabled={isLoading}
-          className={`w-full py-3 mt-6 ${isLoading ? 'bg-[#00df9a] opacity-80' : 'bg-[#00df9a]'} rounded text-black font-semibold relative overflow-hidden`}
+          className="w-full py-3 mt-6 bg-[#00df9a] hover:bg-[#00c58a] rounded text-white font-semibold relative overflow-hidden"
         >
           {isLoading && (
             <motion.span 
@@ -418,7 +363,7 @@ const Profile = () => {
           <span className="relative z-10 flex items-center justify-center">
             {isLoading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>

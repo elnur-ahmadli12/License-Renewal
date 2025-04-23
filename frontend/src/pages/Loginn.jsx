@@ -4,12 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import Bgimage from "../assets/traffic.jpg";
 import axios from 'axios';
-const API_URL = "http://localhost:5000/api/auth"; // Backend portuyla eşleşmeli
-
-
+const API_URL = "http://localhost:5000/api/auth";
 
 const LoginSignup = () => {
-  const navigate = useNavigate(); // Hook'u çağır
+  const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -30,7 +28,6 @@ const LoginSignup = () => {
 
   const passwordRef = useRef(null);
 
-  // Form alanlarını sıfırla
   useEffect(() => {
     if (isSignUp) {
       setEmail("");
@@ -49,7 +46,6 @@ const LoginSignup = () => {
     }
   }, [isSignUp]);
 
-  // Mouse dışına tıklama kontrolü
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (passwordRef.current && !passwordRef.current.contains(event.target)) {
@@ -86,7 +82,7 @@ const LoginSignup = () => {
       const response = await axios.post(
         `${API_URL}/login`,
         { email, password },
-        { withCredentials: true } // 🔑 Bu satırı ekleyin!
+        { withCredentials: true }
       );
   
       if (!response.data.token) {
@@ -102,8 +98,10 @@ const LoginSignup = () => {
     }
   };
   
-  const handleSignUp = async () =>{
+  const handleSignUp = async (e) => {
+    e.preventDefault();
     let isValid = true;
+    
     if (!email) {
       setEmailError("Email is required");
       isValid = false;
@@ -136,13 +134,11 @@ const LoginSignup = () => {
           password: password
         });
         
-        // Başarılı kayıt sonrası
-        alert(response.data.message); // "Kayıt başarılı!" mesajı
-        setIsSignUp(false); // Login sayfasına geç
+        alert(response.data.message);
+        setIsSignUp(false);
         
       } catch (error) {
         if (error.response) {
-          // Backend'den gelen hata mesajını göster
           alert(error.response.data.error || "Kayıt başarısız!");
         } else {
           alert("Sunucuyla bağlantı kurulamadı!");
@@ -151,224 +147,282 @@ const LoginSignup = () => {
     }
   };
 
-        // Diğer import'ların yanına
-axios.interceptors.request.use(config => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-    config.withCredentials = true; // Oturum yönetimi için
-  }
-  return config;
-});
+  axios.interceptors.request.use(config => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      config.withCredentials = true;
+    }
+    return config;
+  });
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen bg-cover bg-center"
+      className="flex items-center justify-center min-h-screen bg-cover bg-center bg-fixed p-4 md:p-8"
       style={{ backgroundImage: `url(${Bgimage})` }}
     >
-      <div className="relative w-[800px] h-[500px] bg-gray-900 bg-opacity-50 shadow-2xl rounded-lg overflow-hidden flex">
-        {/* Left Section */}
+      <div className="relative w-full max-w-6xl h-auto md:h-[550px] bg-gray-900 bg-opacity-70 shadow-2xl rounded-xl overflow-hidden flex flex-col md:flex-row">
+        {/* Welcome Section - Side on desktop, top on mobile */}
         <motion.div
-          className={`w-2/5 flex flex-col justify-center items-center p-6 transition-all duration-500 ${isSignUp ? 'order-2' : 'order-1'}`}
+          className={`w-full md:w-2/5 flex flex-col justify-center items-center p-8 ${isSignUp ? 'md:order-2' : 'md:order-1'} bg-gray-800 bg-opacity-60`}
           initial={{ opacity: 0, x: isSignUp ? 100 : -100 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: isSignUp ? 100 : -100 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
-          <h2 className="text-3xl font-bold text-white">Welcome</h2>
-          <p className="text-white mt-4">{isSignUp ? "Already have an account?" : "If you don't have an account"}</p>
-          <button
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="mt-4 px-6 py-2 border border-white rounded bg-transparent text-white hover:bg-[#00df9a] hover:text-black transition text-sm md:text-base"
-            style={{ borderColor: '#00df9a' }}
+          <motion.h2 
+            className="text-4xl font-bold text-white mb-6 text-center"
+            initial={{ y: -20 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            {isSignUp ? "Login" : "Sign Up"}
-          </button>
+            {isSignUp ? "Welcome Back!" : "Join Us!"}
+          </motion.h2>
+          <motion.p 
+            className="text-gray-300 text-lg mb-8 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            {isSignUp ? "Optimize your tax processes with Tax Road’s expert solutions." : "Start your tax journey with Tax Road – smarter, faster, and stress-free."}
+          </motion.p>
+          <motion.button
+            onClick={() => setIsSignUp(!isSignUp)}
+            className="px-8 py-3 rounded-full bg-transparent border-2 border-[#00df9a] text-white hover:bg-[#00df9a] hover:text-gray-900 transition-all duration-300 font-medium text-lg"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isSignUp ? "SIGN IN" : "SIGN UP"}
+          </motion.button>
         </motion.div>
 
-        {/* Right Section */}
-        <div className={`w-3/5 flex flex-col justify-center items-center p-6 transition-all duration-500 ${isSignUp ? 'order-1' : 'order-2'}`}>
+        {/* Form Section */}
+        <div className={`w-full md:w-3/5 flex flex-col justify-center items-center p-6 md:p-10 ${isSignUp ? 'md:order-1' : 'md:order-2'}`}>
           <AnimatePresence mode="wait">
             {!isSignUp ? (
               // Login Form
               <motion.div
                 key="login"
-                initial={{ opacity: 0, x: 100 }}
+                initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -100 }}
+                exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="w-full max-w-xs"
+                className="w-full max-w-md"
               >
-                <h2 className="text-3xl font-bold text-center mb-6 text-white">Login</h2>
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  className={`w-full p-3 mb-4 rounded bg-gray-800 bg-opacity-50 border ${emailError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:border-blue-400`}
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (!e.target.value) {
-                      setEmailError("Email is required");
-                    } else if (!validateEmail(e.target.value)) {
-                      setEmailError("Please enter a valid email address");
-                    } else {
-                      setEmailError("");
-                    }
-                  }}
-                />
-                {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
-                <div className="relative">
-                  <input
-                    type={passwordVisible ? "text" : "password"}
-                    placeholder="Password"
-                    className={`w-full p-3 rounded bg-gray-800 bg-opacity-50 border ${passwordError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:border-blue-400`}
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      if (!e.target.value) {
-                        setPasswordError("Password is required");
-                      } else {
-                        setPasswordError("");
-                      }
-                    }}
-                  />
-                  <button
-                    className="absolute right-3 top-4 text-gray-400"
-                    onClick={() => setPasswordVisible(!passwordVisible)}
-                  >
-                    {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
-                {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
-                <div className="flex items-center justify-between mt-2">
-                  <div className="flex items-center">
-                    <input type="checkbox" id="remember" className="mr-2" />
-                    <label htmlFor="remember" className="text-white">Remember Me</label>
-                  </div>
-                  <button
-                    className="text-[#00df9a] hover:text-[#00c789] text-sm"
-                    onClick={() => console.log("Forgot Password clicked")}
-                  >
-                    Forgot Password?
-                  </button>
-                </div>
-                <button
-                  className="w-full py-2 md:py-3 bg-[#00df9a] hover:bg-[#00c789] transition rounded text-black font-semibold text-sm md:text-base mb-3"
-                  onClick={handleLogin}
+                <motion.h2 
+                  className="text-3xl font-bold text-center mb-8 text-white"
+                  initial={{ y: -20 }}
+                  animate={{ y: 0 }}
                 >
-                  Login
-                </button>
-                <button className="w-full flex items-center justify-center text-white border border-[#00df9a] py-2 rounded hover:bg-[#00df9a] hover:text-black transition text-sm md:text-base">
-                  <FaGoogle className="mr-2" size={14} /> Connect to Google
-                </button>
+                  Login to Account
+                </motion.h2>
+                
+                <div className="space-y-5">
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      className={`w-full p-4 rounded-lg bg-gray-700 bg-opacity-70 border ${emailError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:ring-2 focus:ring-[#00df9a] focus:border-transparent`}
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (!e.target.value) {
+                          setEmailError("Email is required");
+                        } else if (!validateEmail(e.target.value)) {
+                          setEmailError("Please enter a valid email address");
+                        } else {
+                          setEmailError("");
+                        }
+                      }}
+                    />
+                    {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                  </div>
+
+                  <div className="relative">
+                    <input
+                      type={passwordVisible ? "text" : "password"}
+                      placeholder="Password"
+                      className={`w-full p-4 rounded-lg bg-gray-700 bg-opacity-70 border ${passwordError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:ring-2 focus:ring-[#00df9a] focus:border-transparent`}
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (!e.target.value) {
+                          setPasswordError("Password is required");
+                        } else {
+                          setPasswordError("");
+                        }
+                      }}
+                    />
+                    <button
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                      onClick={() => setPasswordVisible(!passwordVisible)}
+                      type="button"
+                    >
+                      {passwordVisible ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                    </button>
+                    {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center space-x-2 text-gray-300 cursor-pointer">
+                      <input type="checkbox" className="form-checkbox h-5 w-5 text-[#00df9a] rounded focus:ring-[#00df9a]" />
+                      <span>Remember me</span>
+                    </label>
+                    <button className="text-[#00df9a] hover:text-[#00c789] text-sm font-medium">
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  <motion.button
+                    className="w-full py-4 bg-[#00df9a] hover:bg-[#00c789] text-gray-900 font-bold rounded-lg transition-all duration-300"
+                    onClick={handleLogin}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    LOGIN
+                  </motion.button>
+
+                  <div className="relative flex items-center justify-center my-4">
+                    <div className="absolute inset-0 border-t border-gray-600"></div>
+                    <span className="relative bg-gray-800 px-4 text-gray-400 text-sm">OR</span>
+                  </div>
+
+                  <button className="w-full flex items-center justify-center space-x-3 py-3 border border-gray-600 rounded-lg hover:bg-gray-700 transition-all duration-300">
+                    <FaGoogle className="text-red-500" size={18} />
+                    <span className="text-white font-medium">Continue with Google</span>
+                  </button>
+                </div>
               </motion.div>
             ) : (
               // Sign Up Form
               <motion.div
                 key="signup"
-                initial={{ opacity: 0, x: -100 }}
+                initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 100 }}
+                exit={{ opacity: 0, x: 50 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="w-full max-w-xs"
+                className="w-full max-w-md"
               >
-                <h2 className="text-3xl font-bold text-center mb-6 text-white">Sign Up</h2>
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  className="w-full p-3 mb-4 rounded bg-gray-700 bg-opacity-50 border border-gray-600 text-white focus:outline-none focus:border-blue-400"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  className={`w-full p-3 mb-4 rounded bg-gray-700 bg-opacity-50 border ${emailError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:border-blue-400`}
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (!e.target.value) {
-                      setEmailError("Email is required");
-                    } else if (!validateEmail(e.target.value)) {
-                      setEmailError("Please enter a valid email address");
-                    } else {
-                      setEmailError("");
-                    }
-                  }}
-                />
-                {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
-                <div className="relative" ref={passwordRef}>
-                  <input
-                    type={passwordVisible ? "text" : "password"}
-                    placeholder="Password"
-                    className={`w-full p-3 rounded bg-gray-700 bg-opacity-50 border ${passwordError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:border-blue-400`}
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      validatePassword(e.target.value);
-                      if (!e.target.value) {
-                        setPasswordError("Password is required");
-                      } else if (!validatePassword(e.target.value)) {
-                        setPasswordError("Password does not meet requirements");
-                      } else {
-                        setPasswordError("");
-                      }
-                    }}
-                    onFocus={() => setShowPasswordRequirements(true)}
-                  />
-                  <button
-                    className="absolute right-3 top-4 text-gray-400"
-                    onClick={() => setPasswordVisible(!passwordVisible)}
-                  >
-                    {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
-                <AnimatePresence>
-                  {showPasswordRequirements && (
-                    <motion.ul
-                      className="text-sm mt-2"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3 }}
+                <motion.h2 
+                  className="text-3xl font-bold text-center mb-8 text-white"
+                  initial={{ y: -20 }}
+                  animate={{ y: 0 }}
+                >
+                  Create Account
+                </motion.h2>
+                
+                <form onSubmit={handleSignUp} className="space-y-5">
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Full Name"
+                      className="w-full p-4 rounded-lg bg-gray-700 bg-opacity-70 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-[#00df9a] focus:border-transparent"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      className={`w-full p-4 rounded-lg bg-gray-700 bg-opacity-70 border ${emailError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:ring-2 focus:ring-[#00df9a] focus:border-transparent`}
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (!e.target.value) {
+                          setEmailError("Email is required");
+                        } else if (!validateEmail(e.target.value)) {
+                          setEmailError("Please enter a valid email address");
+                        } else {
+                          setEmailError("");
+                        }
+                      }}
+                    />
+                    {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                  </div>
+
+                  <div className="relative" ref={passwordRef}>
+                    <input
+                      type={passwordVisible ? "text" : "password"}
+                      placeholder="Password"
+                      className={`w-full p-4 rounded-lg bg-gray-700 bg-opacity-70 border ${passwordError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:ring-2 focus:ring-[#00df9a] focus:border-transparent`}
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        validatePassword(e.target.value);
+                        if (!e.target.value) {
+                          setPasswordError("Password is required");
+                        } else if (!validatePassword(e.target.value)) {
+                          setPasswordError("Password does not meet requirements");
+                        } else {
+                          setPasswordError("");
+                        }
+                      }}
+                      onFocus={() => setShowPasswordRequirements(true)}
+                    />
+                    <button
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                      onClick={() => setPasswordVisible(!passwordVisible)}
+                      type="button"
                     >
-                      {passwordRequirements.map((req, index) => (
-                        <li
-                          key={index}
-                          className={req.isValid ? "text-green-400" : "text-red-400"}
-                        >
-                          {req.text}
-                        </li>
-                      ))}
-                    </motion.ul>
-                  )}
-                </AnimatePresence>
-                <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  className={`w-full p-3 mt-4 rounded bg-gray-700 bg-opacity-50 border ${confirmPasswordError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:border-blue-400`}
-                  value={confirmPassword}
-                  onChange={(e) => {
-                    setConfirmPassword(e.target.value);
-                    if (e.target.value !== password) {
-                      setConfirmPasswordError("Passwords do not match");
-                    } else {
-                      setConfirmPasswordError("");
-                    }
-                  }}
-                />
-                {confirmPasswordError && (
-                  <p className="text-red-500 text-sm">{confirmPasswordError}</p>
-                )}
-                <form onSubmit={handleSignUp}> {/* Form tag'ını ekleyin */}
-  {/* Diğer input alanları buraya */}
-  <button
-    type="submit" // type="submit" ekleyin
-    className="mt-6 w-full py-3 bg-[#00df9a] hover:bg-[#00c789] transition rounded text-white font-semibold text-sm md:text-base"
-  >
-    Sign Up
-  </button>
-</form>
+                      {passwordVisible ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                    </button>
+                    {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
+                  </div>
+
+                  <AnimatePresence>
+                    {showPasswordRequirements && (
+                      <motion.ul
+                        className="text-xs sm:text-sm mt-1 space-y-1"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {passwordRequirements.map((req, index) => (
+                          <li
+                            key={index}
+                            className={`flex items-center ${req.isValid ? "text-green-400" : "text-red-400"}`}
+                          >
+                            <span className="mr-2">
+                              {req.isValid ? "✓" : "✗"}
+                            </span>
+                            {req.text}
+                          </li>
+                        ))}
+                      </motion.ul>
+                    )}
+                  </AnimatePresence>
+
+                  <div>
+                    <input
+                      type="password"
+                      placeholder="Confirm Password"
+                      className={`w-full p-4 rounded-lg bg-gray-700 bg-opacity-70 border ${confirmPasswordError ? 'border-red-500' : 'border-gray-600'} text-white focus:outline-none focus:ring-2 focus:ring-[#00df9a] focus:border-transparent`}
+                      value={confirmPassword}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        if (e.target.value !== password) {
+                          setConfirmPasswordError("Passwords do not match");
+                        } else {
+                          setConfirmPasswordError("");
+                        }
+                      }}
+                    />
+                    {confirmPasswordError && (
+                      <p className="text-red-500 text-sm mt-1">{confirmPasswordError}</p>
+                    )}
+                  </div>
+
+                  <motion.button
+                    type="submit"
+                    className="w-full py-4 bg-[#00df9a] hover:bg-[#00c789] text-gray-900 font-bold rounded-lg transition-all duration-300"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    SIGN UP
+                  </motion.button>
+                </form>
               </motion.div>
             )}
           </AnimatePresence>

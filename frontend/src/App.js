@@ -4,39 +4,53 @@ import HomePage from './pages/HomePage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Contact from './pages/Contact';
-import Login from './pages/Loginn';
+import Login from './pages/Loginn'; 
 import Profile from './pages/Profile';
 import UserDashboard from './pages/UserDashboard';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './context/AuthContext';
-import ProfileE from './pages/Profile';
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-      <Navbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<ProfileE />} />
-          {/* Tüm private routelar burada */}
-          <Route element={<PrivateRoute />}>
-            <Route path="/UserDashboard" element={<UserDashboard />} />
-          </Route>
+      
+        {/* Ana Layout Container */}
+        <div className="flex flex-col min-h-screen">
           
-          {/* Fallback route */}
+          {/* TEK Navbar - SADECE BURADA */}
+         
           
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/company" element={<Company />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/Footer" element={<Footer />} />
-        </Routes>
+          {/* Ana İçerik Alanı */}
+          <main className="flex-grow">
+          <Navbar />
+            <Routes>
+              {/* Ana Sayfa Route'ları */}
+              <Route index element={<HomePage />} />
+              <Route path="/home" element={<HomePage />} />
+              
+              {/* Diğer Sayfalar */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/company" element={<Company />} />
+              <Route path="/contact" element={<Contact />} />
+              
+              {/* Private Route'lar */}
+              <Route element={<PrivateRoute />}>
+                <Route path="/UserDashboard" element={<UserDashboard />} />
+              </Route>
+              
+              {/* Fallback Route */}
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </main>
+          
+          {/* Footer */}
+          <Footer />
+        </div>
       </AuthProvider>
     </BrowserRouter>
-  );
-}
-
-export default App;
+   );
+  }
+  
+  export default App;
