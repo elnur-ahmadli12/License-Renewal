@@ -9,7 +9,7 @@ import Profile from './pages/Profile';
 import UserDashboard from './pages/UserDashboard';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './context/AuthContext';
-
+import Subscription from './pages/Subscription';
 function App() {
   return (
     <BrowserRouter>
@@ -34,7 +34,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/company" element={<Company />} />
               <Route path="/contact" element={<Contact />} />
-              
+              <Route path="/Plans" element={<Subscription />} />
               {/* Private Route'lar */}
               <Route element={<PrivateRoute />}>
                 <Route path="/UserDashboard" element={<UserDashboard />} />

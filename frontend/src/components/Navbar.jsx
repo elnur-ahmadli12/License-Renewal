@@ -35,6 +35,9 @@ const Navbar = () => {
           <li className='p-2 px-6 border-2 border-[#00df9a] rounded-full transition duration-300 hover:bg-[#00df9a] hover:text-black hover:border-transparent'>
             <Link to="/login" className='font-semibold'>Login</Link>
           </li>
+          <li className='p-4'>
+            <Link to="/Plans" className='hover:text-[#00df9a] transition duration-300'>Subscription</Link>
+          </li>
           
         </ul>
 
@@ -66,6 +69,9 @@ const Navbar = () => {
           <li className='p-4 border-b border-gray-600 hover:text-[#00df9a] transition duration-300'>
             <Link to="/login" onClick={handleNav}>Login</Link>
           </li>
+          <li className='p-4 border-b border-gray-600 hover:text-[#00df9a] transition duration-300'>
+            <Link to="/Plans" onClick={handleNav}>Subscription</Link>
+            </li>
         </ul>
       </div>
 
