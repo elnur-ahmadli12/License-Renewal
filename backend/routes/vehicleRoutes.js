@@ -1,11 +1,10 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router(); // ✅ Express'in Router'ını kullanın
+const authenticate = require('../middleware/authenticate');
 const vehicleController = require('../controllers/vehicleController');
-const authenticate = require('../middleware/authenticate'); // JWT doğrulama
 
-// Tüm vehicle rotaları için JWT kontrolü
-router.use(authenticate);
 
-// vehicleRoutes.js
-router.post("/add", vehicleController.addVehicle); // addVehicle fonksiyonu kontrol et!
+// Araç silme endpoint'i
+router.delete('/:id', authenticate, vehicleController.deleteVehicle);
+router.post('/', authenticate, vehicleController.addVehicle); // ✅ BU SATIRI EKLEYİN
 module.exports = router;
